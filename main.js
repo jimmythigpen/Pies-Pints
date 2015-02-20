@@ -18,36 +18,78 @@ var MenuItemsCollection = Backbone.Collection.extend({
   parse: function(response){
     return response.results;
   }
-
 });
 
 //
-// Menu Category List View
+// Menu Item List View
 //
-var MenuCategoryListView = Backbone.View.extend({
-
-  initialize: function() {
-    this.listenTo(this.collection, 'sync', this.createCategories);
+var MenuItemListView = Backbone.View.extend({
+  template: _.template($('[data-template-name=category-item-list-template]').text()),
+  el: '.category-list',
+  events: {
+    'click .apps': 'renderApps',
+    'click .salad': 'renderSalad',
+    'click .pizza': 'renderPizza',
+    'click .drinks': 'renderDrinks',
   },
 
   createCategories: function(){
+   this.categories = this.collection.groupBy(function(model){
+     return model.get('itemCategory');
+   });
+  },
 
-    var categories = this.collection.groupBy(function(model){
-      return model.get('itemCategory');
-  });
+  renderApps: function() {
+    $('.left-container').html(this.template);
+    $('.category-name').text('Apps');
+    var self = this;
+    _.each(this.categories.Apps, function(item){
+      var itemView = new MenuItemView({model: item});
+      itemView.render();
+    });
+  },
 
-    console.log(categories);
-},
+  renderSalad: function() {
+    $('.left-container').html(this.template);
+    $('.category-name').text('Salad');
+    var self = this;
+    _.each(this.categories.Salad, function(item){
+      var itemView = new MenuItemView({model: item});
+      itemView.render();
+    });
+  },
+
+  renderPizza: function() {
+    $('.left-container').html(this.template);
+    $('.category-name').text('Pizza');
+    var self = this;
+    _.each(this.categories.Pizza, function(item){
+      var itemView = new MenuItemView({model: item});
+      itemView.render();
+    });
+  },
+
+  renderDrinks: function() {
+    $('.left-container').html(this.template);
+    $('.category-name').text('Drinks');
+    var self = this;
+    _.each(this.categories.Drinks, function(item){
+      var itemView = new MenuItemView({model: item});
+      itemView.render();
+    });
+  },
 
 });
-
 //
-// Menu Category Item View
+// Menu Item View
 //
-var MenuCategoryItemView = Backbone.View.extend({
-  tagName: 'h3',
+var MenuItemView = Backbone.View.extend({
+  el: '.category-item-list',
+  template: _.template($('[data-template-name=category-item-template]').text()),
 
-
+  render: function(){
+      this.$el.append(this.template(this.model.toJSON()));
+    }
 });
 
 //
@@ -60,13 +102,15 @@ var AppRouter = Backbone.Router.extend({
 
   initialize: function(){
     this.menuItems = new MenuItemsCollection();
-    this.menuCategoryListView = new MenuCategoryListView({collection: this.menuItems});
+    this.menuItemListView = new MenuItemListView({collection: this.menuItems});
   },
 
   index: function(){
-    this.menuItems.fetch();
+    var self = this;
+    this.menuItems.fetch().done(function(){
+    self.menuItemListView.createCategories();
+    });
   }
-
 });
 
 //

@@ -1,13 +1,17 @@
 body {
-  background-color: #DADDD8; }
+  background-color: #DADDD8;
+  font-family: 'Arimo', sans-serif; }
 
 .app-container {
-  width: 600px;
+  width: 700px;
   margin: 0 auto;
   text-align: center; }
 
 h1 {
   text-align: center; }
+
+h2 {
+  margin-bottom: 0px; }
 
 h3 {
   margin: 0px 10px 0px 10px;
