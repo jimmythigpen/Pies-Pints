@@ -33,29 +33,30 @@
 </script>
 
 <script type="text/template" data-template-name="category-item-template">
-    <div><%= itemName %></div>
-    <div><%= itemDescription %></div>
-    <div>($<%= itemPrice %>)</div>
-    <button>Add Item</button>
+  <div><%= itemName %></div>
+  <div><%= itemDescription %></div>
+  <div>($<%= itemPrice %>)</div>
+  <button>Add Item</button>
 </script>
 
-<!-- <script type="text/template" data-template-name="order-item-list-template">
+<script type="text/template" data-template-name="order-item-list-template">
   <h2>Order Info</h2>
   <ul class="js-order-list">
-  </ul>
-</script> -->
-
-<div class="right-container">
-  <h2>Order Info</h2>
-  <ul class="order-list">
-    <li>Cheese Pizza ($9)<button>X</button></li>
-    <li>Sweet Tea ($2)<button>X</button></li>
   </ul>
   <div>
     <h4>Total</h4>
     <div>($11)</div>
     <button>Submit Order</button>
   </div>
+</script>
+
+<script type="text/template" data-template-name="order-item-template">
+  <div><%= itemName %><button>X</button></div>
+  <div>($<%= itemPrice %>)</div>
+</script>
+
+<div class="right-container">
+  <h2>Create your order!</h2>
 </div>
 
 </div>

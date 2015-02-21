@@ -58,7 +58,7 @@ button {
   border-radius: 5px;
   padding: 0px 0px 5px 0px; }
 
-.order-list li {
+.js-order-list li {
   width: 80%;
   margin: 5px auto;
   padding: 5px 0px 5px 0px;
