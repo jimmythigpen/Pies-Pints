@@ -21,75 +21,111 @@ var MenuItemsCollection = Backbone.Collection.extend({
 });
 
 //
+// Category Item List View
+//
+var CategoryItemListView = Backbone.View.extend({
+template: _.template($('[data-template-name=category-item-list-template]').text()),
+el: '.category-list',
+events: {
+  'click .apps': 'renderApps',
+  'click .salad': 'renderSalad',
+  'click .pizza': 'renderPizza',
+  'click .drinks': 'renderDrinks',
+},
+
+
+createCategories: function(){
+ this.categories = this.collection.groupBy(function(model){
+   return model.get('itemCategory');
+
+ });
+},
+
+renderApps: function() {
+
+  $('.left-container').html(this.template);
+  $('.category-name').text('Apps');
+  var self = this;
+  _.each(this.categories.Apps, function(item){
+    var itemListView = new MenuItemListView({model: item});
+    itemListView.render();
+  });
+
+},
+
+renderSalad: function() {
+  $('.left-container').html(this.template);
+  $('.category-name').text('Salad');
+  var self = this;
+  _.each(this.categories.Salad, function(item){
+    var itemListView = new MenuItemListView({model: item});
+    itemListView.render();
+  });
+},
+
+renderPizza: function() {
+  $('.left-container').html(this.template);
+  $('.category-name').text('Pizza');
+  var self = this;
+  _.each(this.categories.Pizza, function(item){
+    var itemListView = new MenuItemListView({model: item});
+    itemListView.render();
+  });
+},
+
+renderDrinks: function() {
+  $('.left-container').html(this.template);
+  $('.category-name').text('Drinks');
+  var self = this;
+  _.each(this.categories.Drinks, function(item){
+    var itemListView = new MenuItemListView({model: item});
+    itemListView.render();
+  });
+},
+});
+
+//
 // Menu Item List View
 //
 var MenuItemListView = Backbone.View.extend({
-  template: _.template($('[data-template-name=category-item-list-template]').text()),
-  el: '.category-list',
+  template: _.template($('[data-template-name=category-item-template]').text()),
+  tagName: 'li',
+  className: 'category-item',
   events: {
-    'click .apps': 'renderApps',
-    'click .salad': 'renderSalad',
-    'click .pizza': 'renderPizza',
-    'click .drinks': 'renderDrinks',
+    'click button': 'addOrderItem',
   },
 
-  createCategories: function(){
-   this.categories = this.collection.groupBy(function(model){
-     return model.get('itemCategory');
-   });
-  },
+  render: function(){
+      var listItems = this.$el.html(this.template(this.model.toJSON()));
+      _.each(listItems, function(item){
+        var itemView = new MenuItemView({model: item});
+        itemView.render();
+      });
+    },
 
-  renderApps: function() {
-    $('.left-container').html(this.template);
-    $('.category-name').text('Apps');
-    var self = this;
-    _.each(this.categories.Apps, function(item){
-      var itemView = new MenuItemView({model: item});
-      itemView.render();
-    });
-  },
-
-  renderSalad: function() {
-    $('.left-container').html(this.template);
-    $('.category-name').text('Salad');
-    var self = this;
-    _.each(this.categories.Salad, function(item){
-      var itemView = new MenuItemView({model: item});
-      itemView.render();
-    });
-  },
-
-  renderPizza: function() {
-    $('.left-container').html(this.template);
-    $('.category-name').text('Pizza');
-    var self = this;
-    _.each(this.categories.Pizza, function(item){
-      var itemView = new MenuItemView({model: item});
-      itemView.render();
-    });
-  },
-
-  renderDrinks: function() {
-    $('.left-container').html(this.template);
-    $('.category-name').text('Drinks');
-    var self = this;
-    _.each(this.categories.Drinks, function(item){
-      var itemView = new MenuItemView({model: item});
-      itemView.render();
-    });
-  },
-
+    addOrderItem: function(){
+        console.log(this.model);
+    }
 });
+
 //
 // Menu Item View
 //
 var MenuItemView = Backbone.View.extend({
+  template: _.template($('[data-template-name=category-item-list-template]').text()),
   el: '.category-item-list',
-  template: _.template($('[data-template-name=category-item-template]').text()),
 
   render: function(){
-      this.$el.append(this.template(this.model.toJSON()));
-    }
+      this.$el.append(this.model);
+
+    },
+});
+
+//
+// Order Item List View
+//
+var OrderItemListView = Backbone.View.extend({
+
 });
 
 //
@@ -103,12 +139,14 @@ var AppRouter = Backbone.Router.extend({
   initialize: function(){
     this.menuItems = new MenuItemsCollection();
     this.menuItemListView = new MenuItemListView({collection: this.menuItems});
+    this.categoryItemListView = new CategoryItemListView({collection: this.menuItems});
+    // this.orderItemListView = new OrderItemListView();
   },
 
   index: function(){
     var self = this;
     this.menuItems.fetch().done(function(){
-    self.menuItemListView.createCategories();
+    self.categoryItemListView.createCategories();
     });
   }
 });
