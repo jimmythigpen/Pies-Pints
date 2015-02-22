@@ -135,14 +135,9 @@ var MenuItemListView = Backbone.View.extend({
 
   orderTotal: function(addItem){
     window.total = window.total + addItem;
-    console.log(window.total);
     $('.order-total').text('$' + window.total);
   },
 
-  // reduceOrderTotal: function(){
-  //   console.log(this.model);
-  //
-  // }
 });
 
 //
@@ -164,12 +159,9 @@ var OrderItemListView = Backbone.View.extend({
   template: _.template($('[data-template-name=order-item-template]').text()),
   tagName: 'li',
   events: {
-    'click': 'removeOrderItem'
+    'click .js-delete': 'removeOrderItem'
   },
 
-  // initialize: function(){
-  //    this.listenTo(window.orderItems, 'remove', this.);
-  //  },
 
   render: function(){
       var OrderlistItems = this.$el.html(this.template(this.model.toJSON()));
@@ -193,6 +185,14 @@ var OrderItemListView = Backbone.View.extend({
 var OrderItemView = Backbone.View.extend({
   template: _.template($('[data-template-name=order-item-list-template]').text()),
   el: '.js-order-list',
+  events: {
+    'click .submit': 'submitOrder'
+  },
+
+  submitOrder: function(){
+    // console.log('Hi');
+    console.log(window.orderItems.toJSON());
+  },
 
   initialize: function(){
      this.listenTo(window.orderItems, 'add', this.renderList);
@@ -203,10 +203,11 @@ var OrderItemView = Backbone.View.extend({
   },
 
   render: function(){
-      this.$el.append(this.model);
+      this.$el.prepend(this.model);
   },
 
 });
+
 //
 // App Router
 //
@@ -220,6 +221,7 @@ var AppRouter = Backbone.Router.extend({
     window.orderItems = new OrderItemsCollection();
     this.categoryItemListView = new CategoryItemListView({collection: this.menuItems});
     this.orderItemView = new OrderItemView();
+
   },
 
   index: function(){

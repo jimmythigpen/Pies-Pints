@@ -42,16 +42,17 @@
 <script type="text/template" data-template-name="order-item-list-template">
   <h2>Order Info</h2>
   <ul class="js-order-list">
-  </ul>
+
   <div>
     <h4>Total</h4>
     <div class="order-total">($0)</div>
-    <button>Submit Order</button>
+    <button class="submit">Submit Order</button>
   </div>
+  </ul>
 </script>
 
 <script type="text/template" data-template-name="order-item-template">
-  <div><%= itemName %><button>X</button></div>
+  <div><%= itemName %><button class="js-delete">X</button></div>
   <div>($<%= itemPrice %>)</div>
 </script>
 
