@@ -124,12 +124,25 @@ var MenuItemListView = Backbone.View.extend({
       e.preventDefault();
       this.orderItem = new OrderItemModel({itemName: this.model.attributes.itemName, itemPrice: this.model.attributes.itemPrice});
       window.orderItems.add(this.orderItem);
+      this.orderTotal(this.orderItem.attributes.itemPrice);
 
       _.each(window.orderItems.models, function(Item){
       var orderItemView = new OrderItemListView({model:Item});
       orderItemView.render();
+
     });
-    }
+  },
+
+  orderTotal: function(addItem){
+    window.total = window.total + addItem;
+    console.log(window.total);
+    $('.order-total').text('$' + window.total);
+  },
+
+  // reduceOrderTotal: function(){
+  //   console.log(this.model);
+  //
+  // }
 });
 
 //
@@ -150,6 +163,13 @@ var MenuItemView = Backbone.View.extend({
 var OrderItemListView = Backbone.View.extend({
   template: _.template($('[data-template-name=order-item-template]').text()),
   tagName: 'li',
+  events: {
+    'click': 'removeOrderItem'
+  },
+
+  // initialize: function(){
+  //    this.listenTo(window.orderItems, 'remove', this.);
+  //  },
 
   render: function(){
       var OrderlistItems = this.$el.html(this.template(this.model.toJSON()));
@@ -157,6 +177,13 @@ var OrderItemListView = Backbone.View.extend({
           var orderItemView = new OrderItemView({model: item});
           orderItemView.render();
       });
+    },
+
+    removeOrderItem: function(){
+      window.total = window.total - this.model.attributes.itemPrice;
+      $('.order-total').text('$' + window.total);
+      window.orderItems.remove(this.model);
+      this.remove();
     }
 });
 
@@ -177,8 +204,8 @@ var OrderItemView = Backbone.View.extend({
 
   render: function(){
       this.$el.append(this.model);
+  },
 
-    },
 });
 //
 // App Router
@@ -189,10 +216,10 @@ var AppRouter = Backbone.Router.extend({
   },
 
   initialize: function(){
-
     this.menuItems = new MenuItemsCollection();
     window.orderItems = new OrderItemsCollection();
     this.categoryItemListView = new CategoryItemListView({collection: this.menuItems});
+    this.orderItemView = new OrderItemView();
   },
 
   index: function(){
@@ -218,6 +245,7 @@ $.ajaxSetup({
 // Glue Code
 //
 $(document).ready(function(){
+  window.total = 0;
   window.router = new AppRouter();
   Backbone.history.start();
 });
