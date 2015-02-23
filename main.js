@@ -190,8 +190,13 @@ var OrderItemView = Backbone.View.extend({
   },
 
   submitOrder: function(){
-    // console.log('Hi');
+    console.log('Hi');
     console.log(window.orderItems.toJSON());
+    $('.right-container').html('<h2>Thank your for your order!</h2>');
+    setTimeout(function(){   location.reload(); }, 2000);
+
+
+
   },
 
   initialize: function(){
